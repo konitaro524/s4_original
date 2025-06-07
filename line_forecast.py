@@ -1,9 +1,32 @@
+import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from models.s4.s4 import S4Block
 from src.dataloaders.datasets.line import LineDataset
+
+
+def plot_predictions(x, y, preds, filename="line_forecast_plot.png"):
+    """Plot the input sequence, target, and generated prediction."""
+    x = x.squeeze(-1).cpu().numpy()
+    y = y.squeeze(-1).cpu().numpy()
+    preds = preds.squeeze(-1).cpu().numpy()
+    seq_len = len(x)
+    t_input = list(range(seq_len))
+    t_future = list(range(seq_len, seq_len + len(y)))
+
+    plt.figure()
+    plt.plot(t_input, x, label="input")
+    plt.plot(t_future, y, label="target")
+    plt.plot(t_future, preds, "--", label="generated")
+    plt.legend()
+    plt.xlabel("t")
+    plt.ylabel("value")
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot to {filename}")
 
 
 
@@ -81,6 +104,7 @@ def train_model():
         avg_train = train_loss / len(train_loader.dataset)
 
         model.eval()
+        plot_predictions(x[0], y_true[0], preds[0])
         val_loss = 0.0
         with torch.no_grad():
             for x, y in val_loader:
