@@ -80,6 +80,7 @@ This script can be used as an example for using S4 variants in external reposito
 In addition, [`line_forecast.py`](line_forecast.py) demonstrates training S4 on a synthetic linear forecasting task using a one-step prediction horizon, printing validation loss to show the model learning a straight line. After training, it runs autoregressive generation using the model's `step` function so you can observe the predictions converge to the target line.
 For a version that uses the repository's Hydra configuration, run [`run_line_forecast.py`](run_line_forecast.py), which internally calls `train.py` with suitable overrides.
 
+
 ### Training with this Repository (Internal Usage)
 
 This repository aims to provide a very flexible framework for training sequence models. Many models and datasets are supported.

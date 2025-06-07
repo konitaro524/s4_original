@@ -6,18 +6,22 @@ from models.s4.s4 import S4Block
 from src.dataloaders.datasets.line import LineDataset
 
 
+
 class ForecastModel(nn.Module):
     def __init__(self, d_model=64, n_layers=2, dropout=0.0):
         super().__init__()
         self.encoder = nn.Linear(1, d_model)
         self.s4_layers = nn.ModuleList(
+
             [
                 S4Block(d_model, transposed=False, dropout=dropout)
                 for _ in range(n_layers)
             ]
+
         )
         self.norms = nn.ModuleList([nn.LayerNorm(d_model) for _ in range(n_layers)])
         self.decoder = nn.Linear(d_model, 1)
+
 
     def setup_step(self):
         for layer in self.s4_layers:
@@ -50,6 +54,7 @@ class ForecastModel(nn.Module):
 
 def train_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
+
     # Use a 1-step forecast horizon so the model output matches the target
     train_dataset = LineDataset(pred_len=1)
     val_dataset = LineDataset(pred_len=1, seed=1)
@@ -62,6 +67,7 @@ def train_model():
 
     for epoch in range(10):
         model.train()
+
         train_loss = 0.0
         for x, y in train_loader:
             x = x.to(device)
@@ -106,6 +112,7 @@ def train_model():
         preds = torch.stack(preds, dim=1)
         print("Target:", y_true[0].squeeze().cpu().numpy())
         print("Preds :", preds[0].squeeze().cpu().numpy())
+
 
 
 if __name__ == "__main__":
