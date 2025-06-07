@@ -1,12 +1,10 @@
 import matplotlib.pyplot as plt
-
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from models.s4.s4 import S4Block
 from src.dataloaders.datasets.line import LineDataset
-
 
 
 def plot_predictions(x, y, preds, filename="line_forecast_plot.png"):
@@ -75,7 +73,6 @@ class ForecastModel(nn.Module):
 
 def train_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-
     # Use a 1-step forecast horizon so the model output matches the target
     train_dataset = LineDataset(pred_len=1)
     val_dataset = LineDataset(pred_len=1, seed=1)
