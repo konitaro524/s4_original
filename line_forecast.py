@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -7,21 +9,40 @@ from src.dataloaders.datasets.line import LineDataset
 
 
 
+def plot_predictions(x, y, preds, filename="line_forecast_plot.png"):
+    """Plot the input sequence, target, and generated prediction."""
+    x = x.squeeze(-1).cpu().numpy()
+    y = y.squeeze(-1).cpu().numpy()
+    preds = preds.squeeze(-1).cpu().numpy()
+    seq_len = len(x)
+    t_input = list(range(seq_len))
+    t_future = list(range(seq_len, seq_len + len(y)))
+
+    plt.figure()
+    plt.plot(t_input, x, label="input")
+    plt.plot(t_future, y, label="target")
+    plt.plot(t_future, preds, "--", label="generated")
+    plt.legend()
+    plt.xlabel("t")
+    plt.ylabel("value")
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot to {filename}")
+
+
 class ForecastModel(nn.Module):
     def __init__(self, d_model=64, n_layers=2, dropout=0.0):
         super().__init__()
         self.encoder = nn.Linear(1, d_model)
         self.s4_layers = nn.ModuleList(
-
             [
                 S4Block(d_model, transposed=False, dropout=dropout)
                 for _ in range(n_layers)
             ]
-
         )
         self.norms = nn.ModuleList([nn.LayerNorm(d_model) for _ in range(n_layers)])
         self.decoder = nn.Linear(d_model, 1)
-
 
     def setup_step(self):
         for layer in self.s4_layers:
@@ -67,7 +88,6 @@ def train_model():
 
     for epoch in range(10):
         model.train()
-
         train_loss = 0.0
         for x, y in train_loader:
             x = x.to(device)
@@ -112,8 +132,7 @@ def train_model():
         preds = torch.stack(preds, dim=1)
         print("Target:", y_true[0].squeeze().cpu().numpy())
         print("Preds :", preds[0].squeeze().cpu().numpy())
-
-
+        plot_predictions(x[0], y_true[0], preds[0])
 
 if __name__ == "__main__":
     train_model()
