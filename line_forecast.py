@@ -1,29 +1,9 @@
 import torch
 import torch.nn as nn
 from models.s4.s4d import S4D
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader
 
-
-class LineDataset(Dataset):
-    """Synthetic dataset of linear sequences for forecasting."""
-
-    def __init__(self, seq_len=10, pred_len=1, size=1000):
-        super().__init__()
-        self.seq_len = seq_len
-        self.pred_len = pred_len
-        self.size = size
-
-    def __len__(self):
-        return self.size
-
-    def __getitem__(self, idx):
-        slope = torch.rand(1) * 2 - 1  # [-1, 1]
-        intercept = torch.rand(1) * 2 - 1
-        t = torch.arange(self.seq_len + self.pred_len, dtype=torch.float)
-        y = slope * t + intercept
-        x = y[: self.seq_len].unsqueeze(-1)
-        target = y[self.seq_len :].unsqueeze(-1)
-        return x, target
+from src.dataloaders.datasets.line import LineDataset
 
 
 class ForecastModel(nn.Module):
