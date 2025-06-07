@@ -12,7 +12,8 @@ def main():
         "pipeline=informer",
         "model=s4",
         "dataset=line",
-        "dataset.pred_len=1",
+        # "dataset.seq_len=24",
+        # "dataset.pred_len=12",
         "loader.batch_size=32",
         "trainer.max_epochs=10",
         "wandb=null",  # disable wandb logging by default

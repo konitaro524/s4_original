@@ -1,6 +1,8 @@
 _name_: line
-seq_len: 24
-pred_len: 12
+size:
+  - 24
+  - 12
+  - 12
 n_train: 1000
 n_val: 200
 n_test: 200
@@ -8,5 +10,4 @@ slope_range: [0.1, 1.0]
 intercept_range: [0.0, 1.0]
 noise_std: 0.0
 seed: 0
-__l_max: ${eval:${.seq_len}+${.pred_len}}
-
+__l_max: ${eval:${.size.0}+${.size.2}}

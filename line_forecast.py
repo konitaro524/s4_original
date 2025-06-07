@@ -74,8 +74,8 @@ class ForecastModel(nn.Module):
 def train_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # Use a 1-step forecast horizon so the model output matches the target
-    train_dataset = LineDataset(pred_len=1)
-    val_dataset = LineDataset(pred_len=1, seed=1)
+    train_dataset = LineDataset(pred_len=12)
+    val_dataset = LineDataset(pred_len=12, seed=1)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=32)
 
