@@ -74,8 +74,9 @@ class ForecastModel(nn.Module):
 def train_model():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # Use a 1-step forecast horizon so the model output matches the target
-    train_dataset = LineDataset(pred_len=12)
-    val_dataset = LineDataset(pred_len=12, seed=1)
+    pred_len = 12
+    train_dataset = LineDataset(pred_len=pred_len)
+    val_dataset = LineDataset(pred_len=pred_len, seed=1)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=32)
 
@@ -87,10 +88,13 @@ def train_model():
         model.train()
         train_loss = 0.0
         for x, y in train_loader:
+            print(f"Batch shape: {x.shape}, Target shape: {y.shape}")
             x = x.to(device)
             y = y.to(device).squeeze(1)
             optimizer.zero_grad()
             out = model(x)
+            out = out[-pred_len:]
+            print(f"Output shape: {out.shape}, Target shape: {y.shape}")
             loss = criterion(out, y)
             loss.backward()
             optimizer.step()
