@@ -2,7 +2,7 @@ from hydra import compose, initialize
 from omegaconf import OmegaConf
 
 from src import utils
-from train import train
+
 
 
 def main():
