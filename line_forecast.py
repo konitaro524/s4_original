@@ -131,6 +131,5 @@ def train_model():
         print("Preds :", preds[0].squeeze().cpu().numpy())
         plot_predictions(x[0], y_true[0], preds[0])
 
-
 if __name__ == "__main__":
     train_model()
